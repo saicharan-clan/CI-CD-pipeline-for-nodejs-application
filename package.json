@@ -1,0 +1,29 @@
+{
+  "name": "nodejs-ci-cd-pipeline",
+  "version": "1.0.0",
+  "description": "CI/CD pipeline for Node.js application with Docker and Kubernetes deployment",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest", 
+    "start": "node index.js", 
+    "build": "docker build -t my-node-app .",
+    "deploy": "kubectl apply -f k8s/deployment.yaml && kubectl apply -f k8s/service.yaml",
+    "predeploy": "npm install"
+  },
+  "keywords": [
+    "nodejs",
+    "ci/cd",
+    "docker",
+    "kubernetes"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1", 
+    "mongoose": "^5.10.9",
+    "jest": "^26.6.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1"
+  }
+}
