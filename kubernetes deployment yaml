@@ -1,33 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-app
+  name: my-node-app
   labels:
-    app: nodejs-app
+    app: my-node-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: nodejs-app
+      app: my-node-app
   template:
     metadata:
       labels:
-        app: nodejs-app
+        app: my-node-app
     spec:
       containers:
-      - name: nodejs-app
-        image: saicharan09/my-node-app:${BUILD_NUMBER}  # Replace with your image from pipeline
-        ports:
-        - containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nodejs-app-service
-spec:
-  type: NodePort  # Change this from LoadBalancer to NodePort for Minikube
-  ports:
-  - port: 80
-    targetPort: 3000
-  selector:
-    app: nodejs-app
+        - name: my-node-app
+          image: docker.io/my-node-app:latest
+          ports:
+            - containerPort: 3000
