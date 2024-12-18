@@ -16,6 +16,11 @@ This repository demonstrates a CI/CD pipeline for a Node.js application using Je
 3. **Kubernetes Configs**: Configures Kubernetes deployment and service.
 4. **Slack Notifications**: Sends notifications upon deployment success or failure.
 
+To enable Slack notifications, you will need to add Jenkins credentials for Slack and Docker.
+
+Slack: Use the Jenkins Slack plugin and create a Slack app for notifications. Add your Slack token to Jenkins credentials.
+Docker: Add your Docker Hub credentials to Jenkins.
+
 ## Setup
 
 1. Create a Jenkins job with the GitHub repository.
