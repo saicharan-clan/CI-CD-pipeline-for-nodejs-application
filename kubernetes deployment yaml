@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nodejs-app
-        image: your-docker-registry/your-app:latest
+        image: saicharan09/my-node-app:${BUILD_NUMBER}  # Replace with your image from pipeline
         ports:
         - containerPort: 3000
 ---
@@ -25,7 +25,7 @@ kind: Service
 metadata:
   name: nodejs-app-service
 spec:
-  type: LoadBalancer
+  type: NodePort  # Change this from LoadBalancer to NodePort for Minikube
   ports:
   - port: 80
     targetPort: 3000
