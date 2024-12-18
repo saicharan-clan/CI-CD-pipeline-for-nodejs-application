@@ -1,34 +1,30 @@
-# Node.js CI/CD Pipeline
+# Node.js CI/CD Pipeline with Jenkins, Docker, and Kubernetes
 
-## Description
-This repository contains the setup for a CI/CD pipeline for a Node.js application using Jenkins. The pipeline automates:
-1. Running tests on pull requests.
-2. Building a Docker image and pushing it to a registry.
-3. Deploying the application to a Kubernetes cluster.
-4. Sending notifications for success or failure.
+## Overview
 
-## Features
-- **Automated Tests:** Ensures code quality by running tests on pull requests.
-- **Dockerized Deployment:** Builds and deploys Docker containers.
-- **Kubernetes Integration:** Deploys the application to a Kubernetes cluster.
-- **Notifications:** Sends deployment status updates via Slack.
+This repository demonstrates a CI/CD pipeline for a Node.js application using Jenkins, Docker, and Kubernetes. It automates:
 
-## Prerequisites
-- Jenkins server with required plugins.
-- Docker registry (e.g., Docker Hub).
-- Kubernetes cluster.
-- Slack workspace (optional for notifications).
+1. **Running tests** automatically on pull requests.
+2. **Building a Docker image** of the Node.js app.
+3. **Deploying the app** to a Kubernetes cluster.
+4. **Sending Slack notifications** about deployment status.
 
-## Steps to Run
-1. Clone this repository.
-2. Update the `Jenkinsfile` with your Docker registry details.
-3. Configure Jenkins with required credentials:
-   - Docker registry credentials.
-   - Kubernetes `kubeconfig` file.
-4. Set up a Jenkins pipeline pointing to this repository.
-5. Trigger the pipeline to deploy the application.
+## Steps
 
-## Files
-- `Jenkinsfile`: Defines the CI/CD pipeline.
-- `Dockerfile`: Used to build the application image.
-- `k8s-deployment.yaml`: Kubernetes deployment and service configuration.
+1. **Jenkinsfile**: Defines the pipeline with stages for checking out code, running tests, building and pushing Docker images, and deploying to Kubernetes.
+2. **Dockerfile**: Builds a Docker image for the Node.js app.
+3. **Kubernetes Configs**: Configures Kubernetes deployment and service.
+4. **Slack Notifications**: Sends notifications upon deployment success or failure.
+
+## Setup
+
+1. Create a Jenkins job with the GitHub repository.
+2. Configure Docker and Kubernetes credentials in Jenkins.
+3. Configure the Slack plugin in Jenkins for notifications.
+
+## Dependencies
+
+- Jenkins
+- Docker Hub
+- Kubernetes (Minikube or Cloud)
+- Slack (for notifications)
