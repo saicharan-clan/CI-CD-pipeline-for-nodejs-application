@@ -2,4 +2,4 @@
   "jest": {
     "testMatch": ["**/*.test.js"]
   }
-}
+};
