@@ -3,7 +3,6 @@ pipeline {
     environment {
         REGISTRY = 'your-docker-registry'
         IMAGE_NAME = 'your-app'
-        KUBECONFIG_CREDENTIALS = credentials('kubeconfig')
     }
     stages {
         stage('Checkout Code') {
@@ -27,11 +26,18 @@ pipeline {
                 sh 'docker push $REGISTRY/$IMAGE_NAME:${BUILD_NUMBER}'
             }
         }
-        stage('Deploy to Kubernetes') {
+        stage('Set up Minikube') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh 'kubectl apply -f k8s-deployment.yaml'
-                }
+                // Ensure Minikube is started
+                sh 'minikube start'
+                // Set environment variable for kubectl to use Minikube's context
+                sh 'eval $(minikube -p minikube docker-env)'
+            }
+        }
+        stage('Deploy to Minikube') {
+            steps {
+                // Apply deployment to Minikube using kubectl
+                sh 'kubectl apply -f k8s-deployment.yaml'
             }
         }
     }
@@ -46,3 +52,4 @@ pipeline {
         }
     }
 }
+
