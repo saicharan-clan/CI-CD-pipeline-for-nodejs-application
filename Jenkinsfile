@@ -1,55 +1,76 @@
 pipeline {
     agent any
+
     environment {
-        REGISTRY = 'your-docker-registry'
-        IMAGE_NAME = 'your-app'
+        REGISTRY = 'docker.io'
+        IMAGE_NAME = 'my-node-app'
+        K8S_NAMESPACE = 'default'
+        SLACK_CHANNEL = '#ci-cd'
     }
+
     stages {
         stage('Checkout Code') {
             steps {
                 checkout scm
             }
         }
+
         stage('Run Tests') {
             steps {
-                sh 'npm install'
-                sh 'npm test'
+                script {
+                    // Install dependencies and run tests
+                    sh 'npm install'
+                    sh 'npx jest --maxWorkers=4'
+                }
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $REGISTRY/$IMAGE_NAME:${BUILD_NUMBER} .'
+                script {
+                    // Build Docker image
+                    sh """
+                        docker build -t ${REGISTRY}/${IMAGE_NAME}:${GIT_COMMIT} .
+                        docker tag ${REGISTRY}/${IMAGE_NAME}:${GIT_COMMIT} ${REGISTRY}/${IMAGE_NAME}:latest
+                    """
+                }
             }
         }
-        stage('Push Docker Image') {
+
+        stage('Push Docker Image to Registry') {
             steps {
-                sh 'docker push $REGISTRY/$IMAGE_NAME:${BUILD_NUMBER}'
+                script {
+                    // Login to Docker and push image
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh """
+                            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
+                            docker push ${REGISTRY}/${IMAGE_NAME}:${GIT_COMMIT}
+                            docker push ${REGISTRY}/${IMAGE_NAME}:latest
+                        """
+                    }
+                }
             }
         }
-        stage('Set up Minikube') {
+
+        stage('Deploy to Kubernetes') {
             steps {
-                // Ensure Minikube is started
-                sh 'minikube start'
-                // Set environment variable for kubectl to use Minikube's context
-                sh 'eval $(minikube -p minikube docker-env)'
-            }
-        }
-        stage('Deploy to Minikube') {
-            steps {
-                // Apply deployment to Minikube using kubectl
-                sh 'kubectl apply -f k8s-deployment.yaml'
+                script {
+                    // Use kubectl to deploy to Kubernetes
+                    sh """
+                        kubectl set image deployment/my-node-app my-node-app=${REGISTRY}/${IMAGE_NAME}:${GIT_COMMIT} -n ${K8S_NAMESPACE}
+                    """
+                }
             }
         }
     }
+
     post {
         success {
-            echo 'Deployment succeeded!'
-            slackSend(channel: '#ci-cd', message: "Deployment succeeded: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}")
+            slackSend(channel: SLACK_CHANNEL, message: "Deployment successful!")
         }
+
         failure {
-            echo 'Deployment failed!'
-            slackSend(channel: '#ci-cd', message: "Deployment failed: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}")
+            slackSend(channel: SLACK_CHANNEL, message: "Deployment failed!")
         }
     }
 }
-
