@@ -1,36 +1,14 @@
 {
   "name": "nodejs-ci-cd-pipeline",
   "version": "1.0.0",
-  "description": "CI/CD pipeline for Node.js application that runs tests, builds Docker images, and deploys to Kubernetes.",
-  "main": "index.js",
   "scripts": {
-    "test": "jest", 
-    "start": "node index.js", 
-    "build": "docker build -t my-node-app .",
-    "docker-run": "docker run -p 3000:3000 my-node-app",
-    "deploy": "kubectl apply -f k8s/deployment.yaml && kubectl apply -f k8s/service.yaml",
-    "predeploy": "npm install",
-    "notify-success": "echo 'Deployment succeeded!'",
-    "notify-failure": "echo 'Deployment failed!'"
+    "start": "node index.js",
+    "test": "jest"
   },
-  "keywords": [
-    "nodejs",
-    "ci/cd",
-    "docker",
-    "kubernetes",
-    "jest",
-    "ci-pipeline"
-  ],
-  "author": "Your Name",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1", 
-    "mongoose": "^5.10.9"
+    "express": "^4.17.1"
   },
   "devDependencies": {
-  "@babel/preset-env": "^7.0.0",
-  "babel-jest": "^29.0.0",
-  "@babel/core": "^7.0.0"
-}
-
+    "jest": "^27.0.0"
+  }
 }
