@@ -1,3 +1,5 @@
-module.exports = {
-  testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
-};
+{
+  "jest": {
+    "testMatch": ["**/*.test.js"]
+  }
+}
